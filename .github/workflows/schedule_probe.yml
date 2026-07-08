@@ -1,0 +1,41 @@
+name: Schedule Probe
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/5 * * * *'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print trigger context
+        run: |
+          echo "event_name=${{ github.event_name }}"
+          echo "run_id=${{ github.run_id }}"
+          echo "run_number=${{ github.run_number }}"
+          echo "ref=${{ github.ref }}"
+          echo "sha=${{ github.sha }}"
+          echo "utc_now=$(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          TZ=Asia/Shanghai date '+beijing_now=%Y-%m-%d %H:%M:%S %Z'
+
+      - name: Write probe artifact
+        run: |
+          mkdir -p artifacts
+          {
+            echo "event_name=${{ github.event_name }}"
+            echo "run_id=${{ github.run_id }}"
+            echo "run_number=${{ github.run_number }}"
+            echo "utc_now=$(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+            TZ=Asia/Shanghai date '+beijing_now=%Y-%m-%d %H:%M:%S %Z'
+          } > artifacts/schedule_probe.txt
+
+      - name: Upload probe artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: schedule-probe-${{ github.run_id }}
+          path: artifacts/schedule_probe.txt
