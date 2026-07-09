@@ -1,47 +1,47 @@
-name: Auto Copy Feishu Drama
+# name: Auto Copy Feishu Drama
 
-on:
-  workflow_dispatch:
-  schedule:
-    # Beijing time 09:24-00:24, GitHub cron is evaluated in UTC.
-    - cron: '24 1-16 * * *'
+# on:
+#   workflow_dispatch:
+#   schedule:
+#     # Beijing time 09:24-00:24, GitHub cron is evaluated in UTC.
+#     - cron: '24 1-16 * * *'
 
-permissions:
-  contents: read
+# permissions:
+#   contents: read
 
-concurrency:
-  group: auto-copy-feishu-drama
-  cancel-in-progress: false
+# concurrency:
+#   group: auto-copy-feishu-drama
+#   cancel-in-progress: false
 
-jobs:
-  run-script:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+# jobs:
+#   run-script:
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 20
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: 'pip'
+#       - name: Set up Python
+#         uses: actions/setup-python@v5
+#         with:
+#           python-version: '3.11'
+#           cache: 'pip'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+#       - name: Install dependencies
+#         run: |
+#           python -m pip install --upgrade pip
+#           pip install -r requirements.txt
 
-      - name: Show schedule context
-        run: |
-          echo "event_name=${{ github.event_name }}"
-          echo "utc_now=$(date -u '+%Y-%m-%d %H:%M:%S UTC')"
-          TZ=Asia/Shanghai date '+beijing_now=%Y-%m-%d %H:%M:%S %Z'
+#       - name: Show schedule context
+#         run: |
+#           echo "event_name=${{ github.event_name }}"
+#           echo "utc_now=$(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+#           TZ=Asia/Shanghai date '+beijing_now=%Y-%m-%d %H:%M:%S %Z'
 
-      - name: Run script
-        env:
-          APP_ID: ${{ secrets.APP_ID }}
-          APP_SECRET: ${{ secrets.APP_SECRET }}
-          FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
-        run: |
-          python auto_copy_drama.py
+#       - name: Run script
+#         env:
+#           APP_ID: ${{ secrets.APP_ID }}
+#           APP_SECRET: ${{ secrets.APP_SECRET }}
+#           FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
+#         run: |
+#           python auto_copy_drama.py
